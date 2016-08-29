@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<style>
+div {
+
+	width:45px;
+	height:45px;
+	float:left;
+	background-color: white;
+}
+
+#optionen {
+	position:absolute;
+	top:320px;
+	left:10px;
+}
+
+#borders, #borders2 {
+	width:309px;
+	height:309px;
+}
+
+
+
+#fadeOverlay {
+
+visibility: hidden;
+-webkit-opacity: 0.55;
+-moz-opacity: 0.55;
+opacity: 0.55;
+height:301px;
+width:301px;
+left:10px;
+top:10px;
+z-index:11;
+position: absolute;
+
+display: inline-block;
+
+transition: background .5s ease-in-out;
+-moz-transition: background .5s ease-in-out;
+-webkit-transition: background .5s ease-in-out;
+
+border:none;
+float:none;
+background-color: transparent;
+
+
+
+}
+
+#continue {
+
+visibility:hidden;
+color:white;
+z-index:200;
+-webkit-opacity: 1;
+-moz-opacity: 1;
+opacity: 1;
+position:absolute;
+left:38px;
+top:135px;
+font-size:1.5em;
+text-shadow: 0 0 0.2em blue, 0 0 0.2em blue, 0 0 0.2em blue;
+
+}
+
+
+	</style>
+</head>
+<body onload="generateTiles(); generateNewPuzzle();">
+
+
+
+<div id="borders"></div>
+<div id="borders2" style="margin-left:10px"></div>
+
+	<script>
+
+//color1 = "#444444";
+//color2 = "#b4d455";
+//borderstyle = "3px ridge #00ff00";
+//turns = 1;
+
+
+
+color1 = "rgb(0, 0, 160)";
+color2 = "rgb(255, 255, 255)";
+borderstyle = "3px inset rgb(0, 128, 255)";
+turns = 3;
+
+
+
+
+
+function checkCorrect() {
+getValue(0);
+	if(resetBoard.join() == currentMuster.join()) {
+		completedPuzzle();
+	}
+}
+
+
+
+
+
+function flip(tile, x, y) {
+
+	aroundX = [];
+	aroundY = [];
+
+if (x == 6) {
+	X = tile.className;
+	Y = tile.id;
+	latestFlip = [X,Y];
+} else {
+	X = x;
+	Y = y;
+};
+
+	for (var i = -1; i < 2; i++) {
+		for (var j = -1; j < 2; j++) {
+			aroundX.push(+X + +i);
+			aroundY.push(+Y + +j)
+		};
+	};
+
+for (var i = 0; i < 9; i++) {ele = document.getElementsByClassName(aroundX[i])[aroundY[i]];
+try {if(ele.style.backgroundColor == hexToRgb(color1)) {ele.style.backgroundColor = hexToRgb(color2);}
+	else {ele.style.backgroundColor = hexToRgb(color1);}
+} catch(err) {}};
+
+checkCorrect();
+}
+
+
+
+function undo(coords) {
+	flip("", coords[0], coords[1]);
+}
+
+
+
+function setValue(arr, mode) {
+
+
+
+
+	for (var i = 0; i < 36; i++) {
+
+
+if (mode) {
+		template = document.getElementsByClassName(i%6+"a")[Math.floor(i/6)+"a"];
+		if(arr[i] == 0) {template.style.backgroundColor = color2;} else {template.style.backgroundColor = color1;}
+
+
+		template = document.getElementsByClassName(i%6)[Math.floor(i/6)];
+		if(arr[i] == 0) {template.style.backgroundColor = color2;} else {template.style.backgroundColor = color1;}
+} else {
+
+
+		template = document.getElementsByClassName(i%6)[Math.floor(i/6)];
+		if(arr[i] == 0) {template.style.backgroundColor = color2;} else {template.style.backgroundColor = color1;}
+}
+
+
+
+	};
+
+
+
+
+
+	
+}
+
+
+muster = [
+[
+0,1,0,1,0,1,
+1,0,1,0,1,0,
+0,1,0,1,0,1,
+1,0,1,0,1,0,
+0,1,0,1,0,1,
+1,0,1,0,1,0,
+],
+[
+1,1,1,1,1,1,
+1,0,0,0,0,1,
+1,0,0,0,0,1,
+1,0,0,0,0,1,
+1,0,0,0,0,1,
+1,1,1,1,1,1
+],
+[
+0,0,0,0,0,0,
+0,0,0,0,0,0,
+0,0,0,0,0,0,
+0,0,0,0,0,0,
+0,0,0,0,0,0,
+0,0,0,0,0,0
+],
+[
+1,1,1,1,1,1,
+1,1,0,0,1,1,
+1,0,0,0,0,1,
+1,0,0,0,0,1,
+1,0,0,0,0,1,
+1,0,0,0,0,1
+],
+[
+0,1,1,1,1,0,
+0,1,1,1,0,0,
+0,1,1,0,1,0,
+0,1,0,1,1,0,
+0,0,1,1,1,0,
+0,1,1,1,1,0
+],
+[
+1,1,1,1,1,1,
+1,1,0,0,1,1,
+1,0,1,1,0,1,
+1,0,0,0,0,1,
+1,0,1,1,0,1,
+1,0,1,1,0,1
+],
+[
+1,1,1,1,1,1,
+0,0,1,1,0,0,
+0,0,0,0,0,0,
+0,0,0,0,0,0,
+1,0,0,0,0,1,
+1,1,0,0,1,1
+],
+[
+1,1,1,1,1,1,
+1,1,0,0,1,1,
+1,0,0,0,0,1,
+1,0,0,0,0,1,
+1,1,0,0,1,1,
+1,1,1,1,1,1
+]
+]
+
+//T = [
+//0,0,0,0,0,0,
+//0,1,1,1,1,0,
+//0,0,1,1,0,0,
+//0,0,1,1,0,0,
+//0,0,1,1,0,0,
+//0,0,0,0,0,0
+//]
+//
+//O = [
+//0,0,0,0,0,0,
+//0,1,1,1,1,0,
+//0,1,0,0,1,0,
+//0,1,0,0,1,0,
+//0,1,1,1,1,0,
+//0,0,0,0,0,0
+//]
+
+
+
+
+
+
+//https://dreaminginjavascript.wordpress.com/2008/08/22/eliminating-duplicates/
+function eliminateDuplicates(arr) {var i,len=arr.length,out=[],obj={};for(i=0;i<len;i++){obj[arr[i]]=0;}for(i in obj){out.push(i);}return out;}
+
+
+
+function getValue(reset) {
+
+if (reset) {currentBoard = [];};
+
+resetBoard = [];
+
+	for (var i = 0; i < 6; i++) {
+	for (var j = 0; j < 6; j++) {
+
+
+if (reset) {
+
+	if (document.getElementsByClassName(j)[i].style.backgroundColor == hexToRgb(color1)) {currentBoard.push(1)} else {
+		currentBoard.push(0);
+	}
+} else {
+	if (document.getElementsByClassName(j)[i].style.backgroundColor == hexToRgb(color1)) {resetBoard.push(1)} else {
+		resetBoard.push(0);
+	}
+}
+
+
+
+
+		};
+	};
+}
+
+
+
+
+function completedPuzzle() {
+
+	fadein();
+
+
+}
+
+function nextLevel() {
+
+
+if(document.getElementById("continue").style.visibility == "visible") {
+	document.getElementById("fadeOverlay").style.background = "none";
+	document.getElementById("fadeOverlay").style.visibility = "hidden";
+	document.getElementById("continue").style.visibility = "hidden";
+	generateNewPuzzle();
+}
+
+
+
+}
+
+
+function reset() {
+	for (var i = 0; i < 36; i++){
+	console.log(currentBoard[i]);
+	console.log(document.getElementsByClassName(i%6)[Math.floor(i/6)]);
+	//if(currentBoard[i] == 0) {template.style.backgroundColor = color2;} else {template.style.//backgroundColor = color1;}
+};
+}
+
+
+function fadein() {
+
+
+	document.getElementById("fadeOverlay").style.background = "#000";
+	document.getElementById("fadeOverlay").style.visibility = "visible";
+
+setTimeout(function(){
+    document.getElementById("continue").style.visibility = "visible";
+}, 500);
+
+
+	
+}
+
+
+
+function KeyPress(e) {
+      var evtobj = window.event? event : e
+      if (evtobj.keyCode == 90 && evtobj.ctrlKey) undo(latestFlip);
+}
+
+document.onkeydown = KeyPress;
+
+
+
+
+function generateNewPuzzle() {
+
+currentMuster = muster[Math.floor(Math.random() * muster.length)];
+
+setValue(currentMuster, 1);
+
+	takenTurns = [];
+	
+	do{
+	takenTurns.push(Math.floor((Math.random()*6))+ "," + Math.floor((Math.random()*6)));
+	takenTurns = eliminateDuplicates(takenTurns);
+	}
+	while(takenTurns.length < turns)
+	
+	for (var i = 0; i < turns; i++) {
+		flip(0,+takenTurns[i].charAt(0),+takenTurns[i].charAt(2));
+	};
+	getValue(1);
+}
+
+
+
+function generateTiles() {
+for (var i = 0; i < 6; i++) {
+	for (var j = 0; j < 6; j++) {
+		tile = document.createElement("div");
+		tile.onclick = function() {flip(this, 6, 6)};
+		tile.className = j;
+		tile.id = i;
+		tile.style.border = borderstyle;
+		document.getElementById("borders").appendChild(tile);
+
+
+		tile = document.createElement("div");
+		tile.className = j + "a";
+		tile.id = i + "a";
+		tile.style.border = borderstyle;
+		document.getElementById("borders2").appendChild(tile);
+	};
+};
+}
+
+
+
+
+
+function hexToRgb(hex) {
+
+
+if( hex.indexOf('rgb') >= 0){
+  return hex;
+}
+
+
+        var h=hex.replace('#', '');
+        h =  h.match(new RegExp('(.{'+h.length/3+'})', 'g'));
+
+        for(var i=0; i<h.length; i++)
+            h[i] = parseInt(h[i].length==1? h[i]+h[i]:h[i], 16);
+
+
+
+        return 'rgb('+h.join(', ')+')';
+}
+
+
+function settingsChanged() {
+
+var firstBox = document.getElementById("borders");
+while (firstBox.firstChild) {
+    firstBox.removeChild(firstBox.firstChild);
+}
+
+var secondBox = document.getElementById("borders2");
+while (secondBox.firstChild) {
+    secondBox.removeChild(secondBox.firstChild);
+}
+
+	color1 = hexToRgb(document.getElementById("color1").value);
+	color2 = hexToRgb(document.getElementById("color2").value);
+
+
+	borderstyle = "3px " + document.getElementById("borderstyles").value + " " + hexToRgb(document.getElementById("color3").value);
+
+
+
+
+
+	if (!isNaN(turns) && turns > 0) {
+		turns = document.getElementById("turnnumber").value;
+	} else {
+		turns = 3;
+	}
+	
+
+generateTiles();
+generateNewPuzzle();
+
+
+}
+
+
+
+
+
+
+
+	</script>
+
+<button onclick="setValue(currentBoard, 0)">↩ Reset</button>
+<br>
+<button onclick="generateNewPuzzle()">↺ Neues Puzzle</button>
+
+
+<div id="fadeOverlay" onclick="nextLevel()"></div><span id="continue" onclick="nextLevel()">Klicken zum fortfahren</span>
+
+
+
+
+
+<span id="optionen">
+	<fieldset>
+    <legend>Optionen</legend>
+    <button style="height:0px;width:170px;visibility:hidden;"></button>
+    <span>
+      <label for="nachname"><b style="float:left">Farbschema:</b></label>
+      <br><span style="line-height:27px">Solides Feld:</span><input id="color1" type="color" style="position:absolute;left:110px;">
+      <br><span style="line-height:27px">Leeres Feld:</span><input id="color2" type="color" style="position:absolute;left:110px;">
+    </span>
+          <br><span style="line-height:27px;float:bottom;">Ränder:</span>
+<select id="borderstyles" style="position:absolute;left:110px;top:100px">
+  <option value="dotted">Gepunktet</option>
+  <option value="dashed">Gestrichelt</option>
+  <option value="solid">Solid</option>
+  <option value="double">Doppelt</option>
+  <option value="groove">Gerillt</option>
+  <option value="ridge">Erhöht</option>
+  <option value="inset">Nach innen</option>
+  <option value="outset">Nach außen</option>
+</select>
+          <input id="color3" type="color" style="position:absolute;left:220px;">
+
+
+
+    <p>
+      <label for="plz"><b>Züge:</b></label><br style="line-height:25px">
+      <input type="number" id="turnnumber" name="quantity" min="1" max="36">
+    </p>
+    <p>
+       <label for="plz"><b>Auto-Reset ein?</b></label><br style="line-height:25px"><input style="display:inline" id="autoreset" type="checkbox" name="autoreset">
+
+    </p>
+
+
+
+
+
+    <p>
+
+<button onclick="settingsChanged()">Anwenden</button>
+
+    </p>
+
+</fieldset>
+</span>
+
+
+
+</body>
+</html>
